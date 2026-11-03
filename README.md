@@ -60,3 +60,4 @@ npm run build
 
 To customize the website for another clinic or doctor, simply edit:
 👉 `src/config/clinicData.ts`
+
