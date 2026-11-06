@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { 
-  MapPin, 
-  Phone, 
-  Clock, 
-  Mail, 
   Send, 
   CheckCircle2, 
-  ExternalLink,
+  ArrowUpRight,
   ShieldCheck,
-  Calendar,
   AlertCircle,
-  MessageCircle,
-  Sparkles
+  MessageCircle
 } from 'lucide-react';
 import { clinicData, getWhatsAppLink } from '../config/clinicData';
 
@@ -42,7 +36,6 @@ export const AppointmentSection: React.FC = () => {
   ];
 
   const validatePhone = (phone: string) => {
-    // 10-digit Indian mobile regex starting with 6, 7, 8, or 9
     return /^[6-9]\d{9}$/.test(phone.replace(/\D/g, ''));
   };
 
@@ -50,7 +43,7 @@ export const AppointmentSection: React.FC = () => {
     e.preventDefault();
     setErrorMsg('');
 
-    // 1. Anti-bot honeypot check (silently drops bot submissions)
+    // 1. Anti-bot honeypot check (silently drop bot submissions)
     if (honeypot) {
       console.warn('Bot submission rejected via honeypot');
       setSubmittedData({ ...formData, phone: '9876543210' });
@@ -86,7 +79,6 @@ export const AppointmentSection: React.FC = () => {
     setLoading(true);
 
     try {
-      // If a real Web3Forms key is provided, send to API; otherwise gracefully simulate for demo/preview
       const isPlaceholderKey = !clinicData.web3FormsAccessKey || 
         clinicData.web3FormsAccessKey.includes('YOUR_WEB3FORMS');
 
@@ -115,11 +107,9 @@ export const AppointmentSection: React.FC = () => {
           throw new Error(data.message || 'Submission failed');
         }
       } else {
-        // Simulated network delay for smooth experience during demo/preview
         await new Promise((resolve) => setTimeout(resolve, 800));
       }
 
-      // Record successful submission timestamp for rate limiting
       sessionStorage.setItem('apex_last_appointment_submit', Date.now().toString());
       setSubmittedData({
         ...formData,
@@ -130,7 +120,6 @@ export const AppointmentSection: React.FC = () => {
       });
     } catch (err: any) {
       console.error('Form submission failed:', err);
-      // Honest error notice directing patient to immediate WhatsApp / phone triage
       setErrorMsg(
         'We could not transmit your request over the internet right now. Please tap "Book on WhatsApp" below or call our clinic directly.'
       );
@@ -139,7 +128,6 @@ export const AppointmentSection: React.FC = () => {
     }
   };
 
-  // WhatsApp confirmation url with booked details
   const getConfirmationWhatsAppLink = () => {
     if (!submittedData) return getWhatsAppLink();
     const msg = `Hi Dr. Ananya, I just booked an appointment on your website!\n\n• Name: ${submittedData.name}\n• Mobile: ${submittedData.phone}\n• Treatment: ${submittedData.treatment}\n• Preferred Shift: ${submittedData.shift}\n• Date: ${submittedData.date || 'Earliest Available'}\n\nPlease confirm my consultation slot.`;
@@ -147,171 +135,128 @@ export const AppointmentSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 lg:py-24 bg-slate-50 relative">
+    <section id="contact" className="py-20 lg:py-24 bg-dental-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 bg-teal-100 text-teal-800 text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-3">
-            <Calendar className="w-3.5 h-3.5 text-teal-700" />
-            Easy OPD Booking
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-navy tracking-tight">
-            Visit Our Clinic or Request an Instant Consultation
+        {/* Section Heading */}
+        <div className="max-w-3xl mb-14">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-dental-ink tracking-tight">
+            OPD Timings & Consultation Booking
           </h2>
-          <p className="mt-3 text-slate-600 text-base">
-            Convenient split morning and evening OPD shifts designed around your busy schedule.
+          <p className="mt-3 text-base text-dental-muted leading-relaxed">
+            Convenient split morning and evening OPD shifts in Bandra West designed around your workday.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Clinic Address, OPD Timings & Landmark Badges */}
+          {/* Left Column: Address, OPD Shifts & Phone */}
           <div className="lg:col-span-5 space-y-6">
-            
-            {/* Main Info Card */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-md space-y-6">
+            <div className="bg-white rounded-tile p-6 sm:p-8 space-y-6">
               
               {/* Address Block */}
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-teal-50 text-teal-700 rounded-2xl shrink-0 mt-1">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-1">
-                    Clinic Address
-                  </h4>
-                  <p className="text-sm text-slate-700 leading-relaxed font-medium">
-                    {clinicData.fullAddress}
-                  </p>
-                  
-                  {/* Landmark Badge */}
-                  <div className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-lg">
-                    <Sparkles className="w-3.5 h-3.5 text-teal-600" />
-                    <span>{clinicData.landmark}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Split Indian OPD Hours */}
-              <div className="flex items-start gap-4 pt-4 border-t border-slate-100">
-                <div className="p-3 bg-teal-50 text-teal-700 rounded-2xl shrink-0 mt-1">
-                  <Clock className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">
-                    OPD Consultation Hours
-                  </h4>
-                  <div className="space-y-1.5 text-sm text-slate-700">
-                    <div className="flex items-center justify-between gap-4 py-1 border-b border-slate-50">
-                      <span className="font-semibold text-brand-navy">Morning Shift:</span>
-                      <span className="text-teal-700 font-bold">{clinicData.opdHours.morning}</span>
-                    </div>
-                    <div className="flex items-center justify-between gap-4 py-1 border-b border-slate-50">
-                      <span className="font-semibold text-brand-navy">Evening Shift:</span>
-                      <span className="text-teal-700 font-bold">{clinicData.opdHours.evening}</span>
-                    </div>
-                    <div className="text-xs text-slate-500 pt-1">
-                      {clinicData.opdHours.workingDays} • {clinicData.opdHours.sundayEmergency}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone & Direct Calling */}
-              <div className="flex items-start gap-4 pt-4 border-t border-slate-100">
-                <div className="p-3 bg-teal-50 text-teal-700 rounded-2xl shrink-0 mt-1">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-1">
-                    Direct Phone Line
-                  </h4>
-                  <a
-                    href={`tel:${clinicData.phoneRaw}`}
-                    className="text-lg font-bold text-teal-700 hover:text-teal-800 transition-colors block"
-                  >
-                    {clinicData.phoneDisplay}
-                  </a>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    For appointments & emergency dental triage
-                  </p>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-start gap-4 pt-4 border-t border-slate-100">
-                <div className="p-3 bg-teal-50 text-teal-700 rounded-2xl shrink-0 mt-1">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-1">
-                    Email Inquiries
-                  </h4>
-                  <a
-                    href={`mailto:${clinicData.email}`}
-                    className="text-sm font-medium text-slate-700 hover:text-teal-700 transition-colors"
-                  >
-                    {clinicData.email}
-                  </a>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Google Maps Directions Button Card */}
-            <div className="bg-brand-navy text-white rounded-3xl p-6 shadow-lg flex items-center justify-between gap-4">
               <div>
-                <h4 className="text-base font-bold text-white mb-1">
-                  Need Help Finding Us?
+                <h4 className="text-sm font-bold text-dental-ink mb-1">
+                  Clinic Location
                 </h4>
-                <p className="text-xs text-slate-300">
-                  Located near Hill Road Junction, Bandra West. Free valet parking available.
+                <p className="text-sm text-dental-muted leading-relaxed">
+                  {clinicData.fullAddress}
+                </p>
+                <p className="text-[13px] text-dental-accent font-semibold mt-1">
+                  {clinicData.landmark}
+                </p>
+                <div className="mt-3">
+                  <a
+                    href="https://maps.google.com/?q=Bandra+West+Mumbai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[13px] font-semibold text-dental-ink hover:text-dental-accent transition-colors"
+                  >
+                    <span>Open in Google Maps</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Split OPD Hours */}
+              <div className="pt-2">
+                <h4 className="text-sm font-bold text-dental-ink mb-2">
+                  OPD Shifts (Monday to Saturday)
+                </h4>
+                <div className="space-y-1.5 text-[13px] bg-dental-surface p-3.5 rounded-lg">
+                  <div className="flex justify-between py-0.5">
+                    <span className="font-semibold text-dental-ink">Morning Shift:</span>
+                    <span className="text-dental-accent font-bold">{clinicData.opdHours.morning}</span>
+                  </div>
+                  <div className="flex justify-between py-0.5">
+                    <span className="font-semibold text-dental-ink">Evening Shift:</span>
+                    <span className="text-dental-accent font-bold">{clinicData.opdHours.evening}</span>
+                  </div>
+                  <p className="text-[13px] text-dental-ink pt-1">
+                    {clinicData.opdHours.sundayEmergency}
+                  </p>
+                </div>
+              </div>
+
+              {/* Phone Line */}
+              <div className="pt-2">
+                <h4 className="text-sm font-bold text-dental-ink mb-1">
+                  Direct Phone Desk
+                </h4>
+                <a
+                  href={`tel:${clinicData.phoneRaw}`}
+                  className="text-base font-bold text-dental-accent hover:underline block"
+                >
+                  {clinicData.phoneDisplay}
+                </a>
+                <p className="text-[13px] text-dental-ink mt-0.5">
+                  Appointments & acute dental pain triage
                 </p>
               </div>
-              <a
-                href="https://maps.google.com/?q=Bandra+West+Mumbai"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow"
-              >
-                <span>Open Maps</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            </div>
 
+              {/* Email Line */}
+              <div className="pt-2">
+                <h4 className="text-sm font-bold text-dental-ink mb-1">
+                  Email
+                </h4>
+                <a
+                  href={`mailto:${clinicData.email}`}
+                  className="text-[13px] text-dental-ink hover:underline"
+                >
+                  {clinicData.email}
+                </a>
+              </div>
+
+            </div>
           </div>
 
-          {/* Right Column: Clean HTML Form connected to Web3Forms */}
+          {/* Right Column: Clean Form */}
           <div id="appointment-form" className="lg:col-span-7">
-            <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-xl">
+            <div className="bg-white rounded-tile p-6 sm:p-8">
               
               <div className="mb-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">
-                  Online OPD Booking
-                </span>
-                <h3 className="text-2xl font-bold text-slate-900">
-                  Request Your Consultation Slot
+                <h3 className="text-xl font-bold text-dental-ink">
+                  Request an OPD Consultation Slot
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                  Fill in your details below. Our clinic coordinator will confirm your preferred time within 15 minutes.
+                <p className="text-[13px] text-dental-ink mt-1">
+                  Fill in your details. Our clinic coordinator will confirm your exact slot within 15 minutes.
                 </p>
               </div>
 
-              {/* Error Message Notice with Instant Fallback */}
+              {/* Error Notice with Fallback */}
               {errorMsg && (
-                <div className="mb-6 bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in">
-                  <div className="flex items-center gap-3">
-                    <AlertCircle className="w-5 h-5 shrink-0 text-rose-600" />
+                <div className="mb-6 bg-rose-50 text-rose-700 text-sm p-4 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
                     <span>{errorMsg}</span>
                   </div>
                   <a
                     href={getWhatsAppLink("Hi Dr. Ananya, I was trying to request an appointment on your website and would like to book directly.")}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="shrink-0 inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs px-3.5 py-2 rounded-lg shadow-sm transition-colors"
+                    className="shrink-0 inline-flex items-center gap-1.5 bg-[#25D366] text-slate-950 font-bold text-xs px-3.5 py-1.5 rounded transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4 fill-white text-white" />
+                    <MessageCircle className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
                     <span>Book on WhatsApp</span>
                   </a>
                 </div>
@@ -319,12 +264,12 @@ export const AppointmentSection: React.FC = () => {
 
               {/* Form Element */}
               <form 
+                data-ui="true"
                 action="https://api.web3forms.com/submit" 
                 method="POST" 
                 onSubmit={handleSubmit}
-                className="space-y-5"
+                className="space-y-4"
               >
-                {/* Hidden input for Web3Forms access key */}
                 <input 
                   type="hidden" 
                   name="access_key" 
@@ -336,9 +281,9 @@ export const AppointmentSection: React.FC = () => {
                   value={`${clinicData.name} Website`} 
                 />
 
-                {/* Anti-spam Honeypot field (hidden from human users, catches automated bots) */}
+                {/* Anti-spam Honeypot field */}
                 <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
-                  <label htmlFor="hp-field">Please leave this field empty</label>
+                  <label htmlFor="hp-field">Leave blank</label>
                   <input
                     id="hp-field"
                     type="text"
@@ -350,9 +295,9 @@ export const AppointmentSection: React.FC = () => {
                   />
                 </div>
 
-                {/* Patient Name */}
+                {/* Name */}
                 <div>
-                  <label htmlFor="patient-name" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label htmlFor="patient-name" className="block text-[13px] font-semibold text-dental-ink mb-1">
                     Patient Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -365,17 +310,17 @@ export const AppointmentSection: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Rahul Sharma"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition-all text-slate-800 placeholder-slate-400"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-dental-border focus:border-dental-accent text-sm text-dental-ink outline-none"
                   />
                 </div>
 
-                {/* 10-Digit Mobile Number */}
+                {/* Phone */}
                 <div>
-                  <label htmlFor="patient-phone" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    10-Digit WhatsApp / Mobile Number <span className="text-rose-500">*</span>
+                  <label htmlFor="patient-phone" className="block text-[13px] font-semibold text-dental-ink mb-1">
+                    10-Digit Mobile / WhatsApp <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-500">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-dental-ink">
                       +91
                     </span>
                     <input
@@ -388,17 +333,14 @@ export const AppointmentSection: React.FC = () => {
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="98765 43210"
-                      className="w-full pl-14 pr-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition-all text-slate-800 placeholder-slate-400"
+                      className="w-full pl-12 pr-3.5 py-2.5 rounded-lg border border-dental-border focus:border-dental-accent text-sm text-dental-ink outline-none"
                     />
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1">
-                    We will send your appointment token and slot time on WhatsApp / SMS.
-                  </p>
                 </div>
 
-                {/* Treatment Needed Dropdown */}
+                {/* Treatment Dropdown */}
                 <div>
-                  <label htmlFor="patient-treatment" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  <label htmlFor="patient-treatment" className="block text-[13px] font-semibold text-dental-ink mb-1">
                     Treatment Needed / Primary Concern <span className="text-rose-500">*</span>
                   </label>
                   <select
@@ -406,7 +348,7 @@ export const AppointmentSection: React.FC = () => {
                     name="treatment"
                     value={formData.treatment}
                     onChange={(e) => setFormData({ ...formData, treatment: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition-all text-slate-800 bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-dental-border focus:border-dental-accent text-sm text-dental-ink outline-none bg-white"
                   >
                     {treatmentsList.map((t, idx) => (
                       <option key={idx} value={t}>
@@ -416,11 +358,10 @@ export const AppointmentSection: React.FC = () => {
                   </select>
                 </div>
 
-                {/* Preferred Shift & Date Grid */}
+                {/* Shift & Date */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Shift Selection */}
                   <div>
-                    <label htmlFor="patient-shift" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    <label htmlFor="patient-shift" className="block text-[13px] font-semibold text-dental-ink mb-1">
                       Preferred OPD Shift <span className="text-rose-500">*</span>
                     </label>
                     <select
@@ -428,20 +369,19 @@ export const AppointmentSection: React.FC = () => {
                       name="shift"
                       value={formData.shift}
                       onChange={(e) => setFormData({ ...formData, shift: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition-all text-slate-800 bg-white"
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-dental-border focus:border-dental-accent text-sm text-dental-ink outline-none bg-white"
                     >
                       <option value="Morning OPD (10:00 AM – 2:00 PM)">
-                        Morning (10:00 AM – 2:00 PM)
+                        Morning Shift (10:00 AM – 2:00 PM)
                       </option>
                       <option value="Evening OPD (5:00 PM – 9:00 PM)">
-                        Evening (5:00 PM – 9:00 PM)
+                        Evening Shift (5:00 PM – 9:00 PM)
                       </option>
                     </select>
                   </div>
 
-                  {/* Preferred Date */}
                   <div>
-                    <label htmlFor="patient-date" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    <label htmlFor="patient-date" className="block text-[13px] font-semibold text-dental-ink mb-1">
                       Preferred Date
                     </label>
                     <input
@@ -451,15 +391,15 @@ export const AppointmentSection: React.FC = () => {
                       min={new Date().toISOString().split('T')[0]}
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition-all text-slate-800 bg-white"
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-dental-border focus:border-dental-accent text-sm text-dental-ink outline-none bg-white"
                     />
                   </div>
                 </div>
 
-                {/* Brief Notes */}
+                {/* Clinical Notes */}
                 <div>
-                  <label htmlFor="patient-notes" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Brief Note on Tooth Pain / Symptoms (Optional)
+                  <label htmlFor="patient-notes" className="block text-[13px] font-semibold text-dental-ink mb-1">
+                    Brief Note on Symptoms / Pain (Optional)
                   </label>
                   <textarea
                     id="patient-notes"
@@ -469,27 +409,27 @@ export const AppointmentSection: React.FC = () => {
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     placeholder="e.g. Sensitivity to cold water on lower left molar since 3 days (Max 300 characters)"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition-all text-slate-800 placeholder-slate-400"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-dental-border focus:border-dental-accent text-sm text-dental-ink outline-none"
                   />
                 </div>
 
-                {/* Privacy & Guarantee note */}
-                <div className="flex items-center gap-2 text-xs text-slate-500 pt-1">
-                  <ShieldCheck className="w-4 h-4 text-teal-600 shrink-0" />
-                  <span>100% Confidential. Zero spam. We never share your phone number.</span>
+                {/* Privacy note */}
+                <div className="flex items-center gap-1.5 text-[13px] text-dental-ink pt-1">
+                  <ShieldCheck className="w-4 h-4 text-dental-accent shrink-0" />
+                  <span>100% Confidential. Never shared. Direct front-desk confirmation.</span>
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 px-6 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-base shadow-lg shadow-teal-600/25 transition-all flex items-center justify-center gap-2 active:scale-98 disabled:opacity-75"
+                  className="w-full py-3.5 px-6 rounded-lg bg-dental-accent hover:bg-dental-accentHover text-white font-medium text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-75"
                 >
                   {loading ? (
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div data-ui="true" className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      <Send className="w-5 h-5" />
+                      <Send className="w-4 h-4" />
                       <span>Request OPD Consultation Slot</span>
                     </>
                   )}
@@ -505,57 +445,55 @@ export const AppointmentSection: React.FC = () => {
 
       {/* Confirmation Modal */}
       {submittedData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-teal-100 text-center relative animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dental-dark/70">
+          <div className="bg-white rounded-tile max-w-lg w-full p-6 sm:p-8 text-center border border-dental-border">
             
-            {/* Success icon */}
-            <div className="w-16 h-16 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center mx-auto mb-4 border-2 border-teal-200 shadow-inner">
-              <CheckCircle2 className="w-10 h-10" />
+            <div className="w-12 h-12 rounded-full bg-dental-accentLight text-dental-accent flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-7 h-7" />
             </div>
 
-            <h3 className="text-2xl font-extrabold text-brand-navy">
-              Appointment Request Received!
+            <h3 className="text-2xl font-bold text-dental-ink">
+              Appointment Request Received
             </h3>
             
-            <p className="text-sm text-slate-600 mt-2 mb-6">
-              Thank you, <strong className="text-slate-900">{submittedData.name}</strong>. Our front desk at {clinicData.name} will call you back shortly on <strong className="text-teal-700">+91 {submittedData.phone}</strong> to confirm your slot.
+            <p className="text-sm sm:text-base text-dental-ink mt-2 mb-6 leading-relaxed">
+              Thank you, <strong className="text-dental-ink">{submittedData.name}</strong>. Our front desk at {clinicData.name} will call you shortly on <strong className="text-dental-accent">+91 {submittedData.phone}</strong> to confirm your slot time.
             </p>
 
-            {/* Summary Box */}
-            <div className="bg-teal-50/60 border border-teal-100 rounded-2xl p-4 text-left text-xs sm:text-sm space-y-2 mb-6">
+            {/* Summary */}
+            <div className="bg-dental-surface rounded-lg p-4 text-left text-sm space-y-2 mb-6">
               <div className="flex justify-between">
-                <span className="text-slate-500">Treatment:</span>
-                <span className="font-bold text-slate-800">{submittedData.treatment}</span>
+                <span className="text-dental-muted">Procedure:</span>
+                <span className="font-semibold text-dental-ink">{submittedData.treatment}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Preferred Shift:</span>
-                <span className="font-bold text-teal-800">{submittedData.shift}</span>
+                <span className="text-dental-muted">OPD Shift:</span>
+                <span className="font-semibold text-dental-accent">{submittedData.shift}</span>
               </div>
               {submittedData.date && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Target Date:</span>
-                  <span className="font-bold text-slate-800">{submittedData.date}</span>
+                  <span className="text-dental-muted">Date:</span>
+                  <span className="font-semibold text-dental-ink">{submittedData.date}</span>
                 </div>
               )}
             </div>
 
-            {/* 1-Tap WhatsApp Sync Action */}
             <div className="space-y-3">
               <a
                 href={getConfirmationWhatsAppLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-sm py-3.5 px-6 rounded-xl shadow-md transition-all"
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-slate-950 font-bold text-sm py-3 px-5 rounded-lg transition-colors"
               >
-                <MessageCircle className="w-5 h-5 fill-white text-white" />
+                <MessageCircle className="w-4 h-4 fill-slate-950 text-slate-950" />
                 <span>Confirm Instantly on WhatsApp</span>
               </a>
 
               <button
                 onClick={() => setSubmittedData(null)}
-                className="w-full py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors"
+                className="w-full py-2 text-[13px] font-semibold text-dental-ink hover:underline transition-colors"
               >
-                Close & Return to Website
+                Close & Return
               </button>
             </div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Treatments } from './components/Treatments';
@@ -10,50 +10,66 @@ import { FAQSection } from './components/FAQSection';
 import { AppointmentSection } from './components/AppointmentSection';
 import { Footer } from './components/Footer';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { MobileStickyBar } from './components/MobileStickyBar';
 
 export const App: React.FC = () => {
+  useEffect(() => {
+    // Progressive scroll reveal observer for motion layer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in-view');
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
+    );
+
+    const elements = document.querySelectorAll('.motion-reveal');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white text-slate-800 flex flex-col font-sans pb-16 md:pb-0">
+    <div className="min-h-[100dvh] bg-dental-bg text-dental-ink flex flex-col font-sans">
       {/* Top Header & Sticky Navigation */}
       <Navbar />
 
       {/* Main Content Sections */}
       <main className="flex-grow">
-        {/* 1. Hero Section */}
+        {/* 1. Hero: Statement, Essential Proof & Plinth */}
         <Hero />
 
-        {/* 2. High-Margin Treatments 6-Card Grid */}
+        {/* 2. Specialized Clinical Procedures: The Specimen Catalogue */}
         <Treatments />
 
-        {/* 3. Hospital-Grade 4-Step Sterilization */}
+        {/* 3. Hospital-Grade 4-Step European Class-B Sterilization */}
         <Sterilization />
 
-        {/* 4. Meet the Chief Dental Surgeon */}
+        {/* 4. Meet the Chief Dental Surgeon & 1-on-1 Consultation */}
         <DoctorProfile />
 
-        {/* 5. Interactive Smile Gallery Before/After Slider */}
+        {/* 5. Real Clinical Transformations (Before/After Comparative Slider) */}
         <BeforeAfterSlider />
 
-        {/* 6. Verified Google Reviews */}
+        {/* 6. Verified Patient Proof & Overcoming Anxiety */}
         <Reviews />
 
-        {/* 7. Patient FAQs & Dental Anxiety Assurance */}
+        {/* 7. Patient FAQs & Pricing/Hygiene Transparency */}
         <FAQSection />
 
-        {/* 8. OPD Timings, Location & Instant Web3Forms Booking */}
+        {/* 8. Split OPD Timings, Location & Direct Form Booking */}
         <AppointmentSection />
       </main>
 
       {/* Footer */}
       <Footer />
 
-      {/* Conversion Boosters */}
+      {/* Floating Desktop WhatsApp Button */}
       <FloatingWhatsApp />
-      <MobileStickyBar />
     </div>
   );
 };
 
 export default App;
-

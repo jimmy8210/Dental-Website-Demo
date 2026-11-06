@@ -240,9 +240,9 @@ export const clinicData: ClinicConfig = {
       rating: 5,
       date: "2 months ago",
       treatmentTag: "Clear Aligners & Teeth Whitening",
-      comment: "Got my clear aligners and laser whitening done here before my wedding. The digital 3D preview showed me the exact month-by-month results. Love the fact that instruments are opened from sealed sterile pouches right in front of you. The 0% EMI plan made payment effortless!",
+      comment: "Got my clear aligners and laser whitening done here before my wedding. The digital 3D preview showed me the exact month-by-month results. Love the fact that instruments are opened from sealed sterile pouches right in front of you. The 0% EMI plan made financing straightforward with zero extra charges.",
       verified: true,
-      avatarBg: "bg-indigo-600"
+      avatarBg: "bg-teal-700"
     }
   ],
   

@@ -7,27 +7,37 @@ export default {
   theme: {
     extend: {
       colors: {
+        dental: {
+          bg: '#f7f9fa',
+          surface: '#edf2f5',
+          surfaceAlt: '#ffffff',
+          ink: '#111d24',
+          muted: '#42525d',
+          accent: '#0a7b83',
+          accentHover: '#08636a',
+          accentLight: '#e6f3f2',
+          dark: '#0c181e',
+          darkSurface: '#132027',
+          darkMuted: '#cbd5e1',
+          border: '#dbe4e9'
+        },
         brand: {
-          teal: '#0D9488',
-          tealDark: '#0F766E',
-          tealDeep: '#115E59',
-          mint: '#F0FDFA',
-          mintBorder: '#CCFBF1',
-          navy: '#0F172A',
-          navyMuted: '#1E293B',
+          teal: '#0a7b83',
+          tealDark: '#08636a',
+          navy: '#0c181e',
           whatsapp: '#25D366',
-          whatsappHover: '#1EBE5D',
+          whatsappHover: '#20ba59',
         }
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+        display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
       },
-      boxShadow: {
-        'soft-teal': '0 10px 25px -5px rgba(13, 148, 136, 0.12), 0 8px 10px -6px rgba(13, 148, 136, 0.08)',
-        'elevated': '0 20px 30px -10px rgba(15, 23, 42, 0.08), 0 10px 15px -5px rgba(15, 23, 42, 0.04)',
+      borderRadius: {
+        'specimen': '14px',
+        'tile': '18px',
       }
     },
   },
   plugins: [],
 }
-

@@ -1,119 +1,93 @@
 import React from 'react';
-import { 
-  Waves, 
-  PackageCheck, 
-  ShieldAlert, 
-  Recycle, 
-  ShieldCheck, 
-  CheckCircle,
-  Eye,
-  Thermometer
-} from 'lucide-react';
 import { clinicData } from '../config/clinicData';
 
-const iconMap: Record<string, React.FC<{ className?: string }>> = {
-  Waves,
-  PackageCheck,
-  ShieldAlert,
-  Recycle,
-};
-
 export const Sterilization: React.FC = () => {
-  return (
-    <section id="sterilization" className="py-20 lg:py-24 bg-gradient-to-b from-brand-navy to-slate-900 text-white relative overflow-hidden">
-      {/* Background accents */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+  const steps = [
+    {
+      phase: "Phase 1: Bio-Debridement",
+      param: "42 kHz Ultrasonic Cavitation",
+      title: "Enzymatic Multi-Stage Cleansing",
+      desc: "All instruments undergo computerized ultrasonic cavitation with hospital-grade enzymatic solution to dissolve all organic trace before autoclave sterilization."
+    },
+    {
+      phase: "Phase 2: Core Sterilization",
+      param: "134°C @ 2.1 Bar Pressure",
+      title: "European Class-B Fractionated Autoclave",
+      desc: "True triple-fractionated pre-vacuum pulse extracts all air from hollow handpiece channels, allowing superheated 134°C steam to kill 100% of bacterial and viral spores."
+    },
+    {
+      phase: "Phase 3: Barrier Packaging",
+      param: "Medical Grade Pouch Seal",
+      title: "Hermetic Sealing & Chemical Indicator",
+      desc: "Instruments are hermetically sealed into puncture-resistant medical sterilization pouches with dual chemical indicators that change color when sterility is achieved."
+    },
+    {
+      phase: "Phase 4: Chairside Verification",
+      param: "0% Cross-Contamination",
+      title: "Unwrapped Exclusively Before You",
+      desc: "Sealed sterile pouches remain unopened until you are seated in the operatory chair. You see the intact seal and active chemical proof before any instrument touches you."
+    }
+  ];
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+  return (
+    <section id="sterilization" className="py-20 lg:py-24 bg-dental-dark text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/30 text-teal-300 text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full mb-4">
-            <ShieldCheck className="w-4 h-4 text-teal-400" />
-            Hospital-Grade Hygiene Assurance
-          </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            Your Safety is Our Strictest Protocol: <br className="hidden sm:inline" />
-            <span className="text-teal-400">100% International Sterilization Standards</span>
+        {/* Section Heading & Argument */}
+        <div className="max-w-3xl mb-14 motion-reveal">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            Class-B Hospital Sterilization
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
-            At {clinicData.name}, we treat cross-contamination prevention as our most sacred clinical duty. Every dental drill, bur, and handpiece passes through an uncompromising 4-step European standard cycle.
+          <p className="mt-3 text-base sm:text-lg text-slate-200 leading-relaxed">
+            At {clinicData.name}, cross-contamination prevention is our strict clinical duty. Every drill, bur, and handpiece passes through a certified 4-stage European hospital cycle.
           </p>
         </div>
 
-        {/* 4 Feature Blocks */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {clinicData.sterilizationSteps.map((step) => {
-            const Icon = iconMap[step.icon] || ShieldCheck;
-
-            return (
-              <div 
-                key={step.step}
-                className="bg-slate-800/80 border border-slate-700/80 hover:border-teal-400/60 rounded-2xl p-6 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl hover:shadow-teal-900/30 flex flex-col justify-between"
-              >
-                <div>
-                  {/* Step Number & Protocol Badge */}
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="w-9 h-9 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold text-sm flex items-center justify-center">
-                      0{step.step}
-                    </span>
-                    <span className="text-[10px] font-semibold tracking-wider uppercase bg-slate-900 text-teal-300 px-2.5 py-1 rounded-full border border-slate-700">
-                      {step.protocolBadge}
-                    </span>
-                  </div>
-
-                  {/* Icon */}
-                  <div className="w-12 h-12 rounded-xl bg-teal-900/50 text-teal-300 flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-teal-400" />
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-lg font-bold text-white mb-2 leading-snug">
-                    {step.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                    {step.fullDesc}
-                  </p>
+        {/* 4-Stage Architectural Flow (Editorial Ledger, Not Boxed Icon Cards) */}
+        <div className="space-y-6 motion-reveal">
+          {steps.map((step, idx) => (
+            <div 
+              key={idx}
+              className="py-4 flex flex-col md:flex-row items-start md:items-baseline justify-between gap-4"
+            >
+              <div className="max-w-2xl space-y-1.5">
+                <div className="flex items-center gap-3">
+                  <span className="text-[13px] font-bold text-teal-300">
+                    {step.phase}
+                  </span>
+                  <span className="text-[13px] text-slate-300 font-medium">
+                    {step.param}
+                  </span>
                 </div>
-
-                {/* Micro trust guarantee */}
-                <div className="mt-6 pt-4 border-t border-slate-700/60 flex items-center gap-1.5 text-xs text-teal-300">
-                  <CheckCircle className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                  <span>Verified 0% Bio-Load</span>
-                </div>
+                <h3 className="text-xl font-bold text-white leading-snug">
+                  {step.title}
+                </h3>
+                <p className="text-base text-slate-200 leading-relaxed">
+                  {step.desc}
+                </p>
               </div>
-            );
-          })}
+
+              <div className="shrink-0 text-sm font-semibold text-teal-300 bg-teal-950/40 px-3.5 py-1.5 rounded-lg">
+                Verified 0% Bio-Load
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Sterilization Proof Callout with Highlights */}
-        <div className="mt-12 bg-slate-800/60 border border-teal-500/20 rounded-2xl p-6 sm:p-8 flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-teal-500/20 rounded-xl text-teal-300 shrink-0">
-              <Eye className="w-8 h-8" />
-            </div>
-            <div>
-              <h4 className="text-base sm:text-lg font-bold text-white">
-                The "Open in Front of Patient" Guarantee
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-300 max-w-2xl">
-                Notice the color-changing chemical indicators on your sealed dental kit. Our nursing team opens your sterile kit exclusively once you are comfortably seated on the chair.
-              </p>
-            </div>
+        {/* The Open-in-Front Guarantee Callout */}
+        <div className="mt-12 p-6 sm:p-8 bg-dental-darkSurface rounded-specimen flex flex-col md:flex-row items-start md:items-center justify-between gap-6 motion-reveal">
+          <div className="max-w-2xl space-y-1.5">
+            <span className="text-teal-300 font-bold text-sm block">
+              The "Opened in Front of Patient" Guarantee
+            </span>
+            <p className="text-base text-slate-200 leading-relaxed">
+              Notice the color-changing chemical indicators on your sealed medical pouch. Our nursing staff opens your sterile instrument set exclusively after you are comfortably seated in the operatory chair.
+            </p>
           </div>
-
-          <div className="flex items-center gap-6 shrink-0 text-xs sm:text-sm text-teal-300 font-semibold">
-            <span className="inline-flex items-center gap-2">
-              <Thermometer className="w-4 h-4 text-teal-400" />
-              134°C Steam Tested
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-teal-400" />
-              Class-B Certified
-            </span>
+          <div className="flex items-center gap-4 text-sm text-white font-medium shrink-0">
+            <span>134°C Steam Tested</span>
+            <span>•</span>
+            <span>European Class-B Protocol</span>
           </div>
         </div>
 
@@ -121,4 +95,3 @@ export const Sterilization: React.FC = () => {
     </section>
   );
 };
-

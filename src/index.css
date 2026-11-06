@@ -2,29 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #f7f9fa;
+  --surface: #edf2f5;
+  --surface-alt: #ffffff;
+  --ink: #111d24;
+  --muted: #42525d;
+  --accent: #0a7b83;
+  --accent-hover: #08636a;
+  --accent-ink: #ffffff;
+  --dark: #0c181e;
+  --dark-surface: #132027;
+  --border: #dbe4e9;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
 @layer base {
   html {
-    font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    background-color: var(--bg);
+    color: var(--ink);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    text-wrap: balance;
+    letter-spacing: -0.025em;
+  }
+
+  ::selection {
+    background-color: #0a7b83;
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 2px solid #0a7b83;
+    outline-offset: 3px;
   }
 }
 
-/* Custom subtle animations */
-@keyframes pulseSubtle {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
-  }
-}
-
-.animate-whatsapp-pulse {
-  animation: pulseSubtle 2.5s infinite;
-}
-
-/* Hide scrollbars for clean tabs */
+/* Hide scrollbars for clean case selector tabs */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -33,3 +69,49 @@
   scrollbar-width: none;
 }
 
+/* Motion Layer (taste-skill step 9) */
+@keyframes heroFadeIn {
+  from {
+    opacity: 0.1;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-animate-1 {
+  animation: heroFadeIn 0.5s var(--ease-out) 0.05s both;
+}
+
+.hero-animate-2 {
+  animation: heroFadeIn 0.55s var(--ease-out) 0.15s both;
+}
+
+.hero-animate-3 {
+  animation: heroFadeIn 0.6s var(--ease-out) 0.25s both;
+}
+
+.motion-reveal {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+
+.motion-reveal.is-in-view {
+  animation: heroFadeIn 0.5s var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-animate-1,
+  .hero-animate-2,
+  .hero-animate-3,
+  .motion-reveal,
+  .motion-reveal.is-in-view {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
