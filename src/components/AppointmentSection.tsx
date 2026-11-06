@@ -25,6 +25,7 @@ export const AppointmentSection: React.FC = () => {
     notes: '',
   });
 
+  const [honeypot, setHoneypot] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [submittedData, setSubmittedData] = useState<typeof formData | null>(null);
@@ -49,17 +50,45 @@ export const AppointmentSection: React.FC = () => {
     e.preventDefault();
     setErrorMsg('');
 
+    // 1. Anti-bot honeypot check (silently drops bot submissions)
+    if (honeypot) {
+      console.warn('Bot submission rejected via honeypot');
+      setSubmittedData({ ...formData, phone: '9876543210' });
+      return;
+    }
+
+    // 2. Client-side Rate Limiting / Submission Cooldown (60 seconds)
+    const lastSubmitTime = sessionStorage.getItem('apex_last_appointment_submit');
+    if (lastSubmitTime && Date.now() - Number(lastSubmitTime) < 60000) {
+      const waitSecs = Math.ceil((60000 - (Date.now() - Number(lastSubmitTime))) / 1000);
+      setErrorMsg(`Please wait ${waitSecs} seconds before submitting another request, or contact us directly on WhatsApp.`);
+      return;
+    }
+
+    // 3. Strict Input Length & Sanitization Checks
+    const trimmedName = formData.name.trim().slice(0, 80);
+    if (trimmedName.length < 2) {
+      setErrorMsg('Please enter your full name (minimum 2 characters).');
+      return;
+    }
+
     const cleanPhone = formData.phone.replace(/\D/g, '');
     if (!validatePhone(cleanPhone)) {
       setErrorMsg('Please enter a valid 10-digit Indian mobile number (e.g., 9876543210).');
       return;
     }
 
+    const sanitizedNotes = formData.notes.trim().slice(0, 300);
+    const safeTreatment = treatmentsList.includes(formData.treatment)
+      ? formData.treatment
+      : treatmentsList[0];
+
     setLoading(true);
 
     try {
       // If a real Web3Forms key is provided, send to API; otherwise gracefully simulate for demo/preview
-      const isPlaceholderKey = clinicData.web3FormsAccessKey.includes('YOUR_WEB3FORMS');
+      const isPlaceholderKey = !clinicData.web3FormsAccessKey || 
+        clinicData.web3FormsAccessKey.includes('YOUR_WEB3FORMS');
 
       if (!isPlaceholderKey) {
         const response = await fetch('https://api.web3forms.com/submit', {
@@ -70,14 +99,14 @@ export const AppointmentSection: React.FC = () => {
           },
           body: JSON.stringify({
             access_key: clinicData.web3FormsAccessKey,
-            subject: `New Dental Appointment Request: ${formData.name} (${formData.treatment})`,
-            from_name: `${formData.name} via ${clinicData.name} Website`,
-            patient_name: formData.name,
+            subject: `New Dental Appointment Request: ${trimmedName} (${safeTreatment})`,
+            from_name: `${trimmedName} via ${clinicData.name} Website`,
+            patient_name: trimmedName,
             phone_number: cleanPhone,
-            treatment_needed: formData.treatment,
+            treatment_needed: safeTreatment,
             preferred_shift: formData.shift,
             preferred_date: formData.date || 'Earliest Available',
-            patient_notes: formData.notes || 'None provided',
+            patient_notes: sanitizedNotes || 'None provided',
           }),
         });
 
@@ -86,15 +115,25 @@ export const AppointmentSection: React.FC = () => {
           throw new Error(data.message || 'Submission failed');
         }
       } else {
-        // Simulated network delay for smooth experience
+        // Simulated network delay for smooth experience during demo/preview
         await new Promise((resolve) => setTimeout(resolve, 800));
       }
 
-      setSubmittedData({ ...formData, phone: cleanPhone });
+      // Record successful submission timestamp for rate limiting
+      sessionStorage.setItem('apex_last_appointment_submit', Date.now().toString());
+      setSubmittedData({
+        ...formData,
+        name: trimmedName,
+        phone: cleanPhone,
+        treatment: safeTreatment,
+        notes: sanitizedNotes,
+      });
     } catch (err: any) {
-      console.warn('Form submission notice:', err);
-      // Gracefully fall back to local confirmation so patient is never left stranded
-      setSubmittedData({ ...formData, phone: cleanPhone });
+      console.error('Form submission failed:', err);
+      // Honest error notice directing patient to immediate WhatsApp / phone triage
+      setErrorMsg(
+        'We could not transmit your request over the internet right now. Please tap "Book on WhatsApp" below or call our clinic directly.'
+      );
     } finally {
       setLoading(false);
     }
@@ -259,11 +298,22 @@ export const AppointmentSection: React.FC = () => {
                 </p>
               </div>
 
-              {/* Error Message Notice */}
+              {/* Error Message Notice with Instant Fallback */}
               {errorMsg && (
-                <div className="mb-6 bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm p-4 rounded-xl flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 shrink-0" />
-                  <span>{errorMsg}</span>
+                <div className="mb-6 bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in">
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 shrink-0 text-rose-600" />
+                    <span>{errorMsg}</span>
+                  </div>
+                  <a
+                    href={getWhatsAppLink("Hi Dr. Ananya, I was trying to request an appointment on your website and would like to book directly.")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs px-3.5 py-2 rounded-lg shadow-sm transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-white text-white" />
+                    <span>Book on WhatsApp</span>
+                  </a>
                 </div>
               )}
 
@@ -286,6 +336,20 @@ export const AppointmentSection: React.FC = () => {
                   value={`${clinicData.name} Website`} 
                 />
 
+                {/* Anti-spam Honeypot field (hidden from human users, catches automated bots) */}
+                <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
+                  <label htmlFor="hp-field">Please leave this field empty</label>
+                  <input
+                    id="hp-field"
+                    type="text"
+                    name="botcheck"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </div>
+
                 {/* Patient Name */}
                 <div>
                   <label htmlFor="patient-name" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -296,6 +360,7 @@ export const AppointmentSection: React.FC = () => {
                     type="text"
                     name="name"
                     required
+                    maxLength={80}
                     autoComplete="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -400,9 +465,10 @@ export const AppointmentSection: React.FC = () => {
                     id="patient-notes"
                     rows={2}
                     name="notes"
+                    maxLength={300}
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    placeholder="e.g. Sensitivity to cold water on lower left molar since 3 days"
+                    placeholder="e.g. Sensitivity to cold water on lower left molar since 3 days (Max 300 characters)"
                     className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-sm transition-all text-slate-800 placeholder-slate-400"
                   />
                 </div>

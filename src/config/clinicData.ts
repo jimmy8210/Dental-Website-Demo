@@ -54,8 +54,8 @@ export const clinicData: ClinicConfig = {
     ]
   },
   
-  // Form Endpoint
-  web3FormsAccessKey: "YOUR_WEB3FORMS_ACCESS_KEY", // Replace with your actual key from https://web3forms.com
+  // Form Endpoint (configured via VITE_WEB3FORMS_ACCESS_KEY in .env)
+  web3FormsAccessKey: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY",
   
   // High-Margin Procedures
   treatments: [
