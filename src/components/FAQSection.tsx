@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, MessageCircle } from 'lucide-react';
+import { ChevronDown, MessageCircle, HelpCircle } from 'lucide-react';
 import { clinicData, getWhatsAppLink } from '../config/clinicData';
 
 export const FAQSection: React.FC = () => {
@@ -10,40 +10,44 @@ export const FAQSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-20 lg:py-24 bg-dental-bg">
+    <section id="faq" className="py-24 lg:py-32 bg-white relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         
         {/* Section Heading */}
-        <div className="max-w-2xl mb-12 motion-reveal">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-dental-ink tracking-tight">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold mb-3">
+            <HelpCircle className="w-3.5 h-3.5 text-teal-600" />
+            <span>Patient Inquiries & Transparency</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-base sm:text-lg text-dental-ink leading-relaxed">
-            Transparent answers to common concerns about painlessness, infection control, zero-hidden pricing, and OPD shifts.
+          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+            Transparent answers regarding painless procedures, infection control standards, and insurance/EMI options.
           </p>
         </div>
 
-        {/* Accordion Tiles */}
-        <div className="space-y-3 motion-reveal">
+        {/* Accordion List */}
+        <div className="space-y-3.5">
           {clinicData.faqs.map((faq) => {
             const isOpen = openId === faq.id;
 
             return (
               <div
                 key={faq.id}
-                className="bg-white rounded-specimen overflow-hidden transition-colors"
+                className="rounded-2xl border border-slate-200/90 overflow-hidden bg-white shadow-sm hover:border-slate-300 transition-colors"
               >
                 <button
                   onClick={() => toggleFAQ(faq.id)}
-                  className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 focus:outline-none"
+                  className="w-full py-5 px-6 text-left flex items-center justify-between gap-4 focus:outline-none"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-lg font-bold text-dental-ink">
+                  <span className="text-base sm:text-lg font-bold text-slate-900">
                     {faq.question}
                   </span>
                   <div
-                    className={`w-6 h-6 flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-dental-accent' : 'text-dental-muted'
+                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                      isOpen ? 'rotate-180 bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-500'
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
@@ -51,7 +55,7 @@ export const FAQSection: React.FC = () => {
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-5 pt-1 text-base text-dental-ink leading-relaxed">
+                  <div className="px-6 pb-6 pt-1 text-sm sm:text-base text-slate-600 leading-relaxed border-t border-slate-100 font-normal">
                     <p>{faq.answer}</p>
                   </div>
                 )}
@@ -61,18 +65,22 @@ export const FAQSection: React.FC = () => {
         </div>
 
         {/* Direct WhatsApp Doctor Ask Banner */}
-        <div className="mt-10 p-6 bg-dental-surface rounded-specimen flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 motion-reveal">
-          <div>
-            <h4 className="text-base font-bold text-dental-ink">Have an acute tooth pain or urgent clinical question?</h4>
-            <p className="text-[13px] text-dental-ink mt-0.5">Ask Dr. Ananya directly on WhatsApp without obligation.</p>
+        <div className="mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50/50 to-white border border-emerald-200/80 shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <h4 className="text-base font-bold text-slate-900">
+              Have an acute dental pain or urgent clinical question?
+            </h4>
+            <p className="text-xs sm:text-sm text-slate-600 font-normal">
+              Consult Dr. Ananya Mukherjee directly on WhatsApp without obligation.
+            </p>
           </div>
           <a
             href={getWhatsAppLink("Hi Dr. Ananya, I have a quick question regarding a dental problem.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-950 bg-emerald-300 hover:bg-emerald-400 px-4 py-2.5 rounded-lg transition-colors shrink-0"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/20 active:scale-95 transition-all shrink-0"
           >
-            <MessageCircle className="w-4 h-4 fill-emerald-950 text-emerald-950" />
+            <MessageCircle className="w-4 h-4 fill-slate-950 text-slate-950" />
             <span>Chat on WhatsApp</span>
           </a>
         </div>

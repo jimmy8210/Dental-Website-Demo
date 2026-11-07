@@ -1,93 +1,127 @@
 import React from 'react';
+import { ShieldCheck, Waves, PackageCheck, Zap, Sparkles, CheckCircle2 } from 'lucide-react';
 import { clinicData } from '../config/clinicData';
 
 export const Sterilization: React.FC = () => {
   const steps = [
     {
-      phase: "Phase 1: Bio-Debridement",
-      param: "42 kHz Ultrasonic Cavitation",
-      title: "Enzymatic Multi-Stage Cleansing",
-      desc: "All instruments undergo computerized ultrasonic cavitation with hospital-grade enzymatic solution to dissolve all organic trace before autoclave sterilization."
+      num: "01",
+      icon: Waves,
+      phase: "Enzymatic Debridement",
+      title: "42 kHz Ultrasonic Cavitation",
+      desc: "All instruments undergo computerized ultrasonic cavitation with hospital-grade multi-enzyme solutions to dissolve microscopic bio-films before thermal sterilization.",
+      highlight: "Medical-grade bio-cleanse"
     },
     {
-      phase: "Phase 2: Core Sterilization",
-      param: "134°C @ 2.1 Bar Pressure",
-      title: "European Class-B Fractionated Autoclave",
-      desc: "True triple-fractionated pre-vacuum pulse extracts all air from hollow handpiece channels, allowing superheated 134°C steam to kill 100% of bacterial and viral spores."
+      num: "02",
+      icon: PackageCheck,
+      phase: "Hermetic Packaging",
+      title: "Sterile Pouches & Indicators",
+      desc: "Instruments are hermetically sealed into puncture-resistant medical pouches equipped with internal & external chemical indicators that change color upon verified sterility.",
+      highlight: "Dual chemical verification"
     },
     {
-      phase: "Phase 3: Barrier Packaging",
-      param: "Medical Grade Pouch Seal",
-      title: "Hermetic Sealing & Chemical Indicator",
-      desc: "Instruments are hermetically sealed into puncture-resistant medical sterilization pouches with dual chemical indicators that change color when sterility is achieved."
+      num: "03",
+      icon: Zap,
+      phase: "Core Hospital Protocol",
+      title: "European Class-B Autoclave",
+      desc: "Triple-pulse fractionated pre-vacuum extracts all air from hollow handpiece channels, driving superheated 134°C steam at 2.1 bar to eliminate 100% of bacterial and viral spores.",
+      highlight: "134°C @ 2.1 bar steam"
     },
     {
-      phase: "Phase 4: Chairside Verification",
-      param: "0% Cross-Contamination",
-      title: "Unwrapped Exclusively Before You",
-      desc: "Sealed sterile pouches remain unopened until you are seated in the operatory chair. You see the intact seal and active chemical proof before any instrument touches you."
+      num: "04",
+      icon: ShieldCheck,
+      phase: "Point-of-Care Assurance",
+      title: "Unwrapped Chairside In Front of You",
+      desc: "Sterile pouches remain completely sealed until you are seated in the dental operatory. You witness the unbroken seal and active chemical proof before any instrument is used.",
+      highlight: "0% Cross-contamination"
     }
   ];
 
   return (
-    <section id="sterilization" className="py-20 lg:py-24 bg-dental-dark text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="sterilization" className="py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
+      {/* Background Decorative Tech Glows */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         
-        {/* Section Heading & Argument */}
-        <div className="max-w-3xl mb-14 motion-reveal">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Class-B Hospital Sterilization
+        {/* Section Heading */}
+        <div className="max-w-3xl mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-950/80 border border-teal-500/40 text-teal-300 text-xs font-bold mb-3">
+            <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+            <span>Hospital-Grade Infection Control</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+            European Class-B Sterilization: Zero Cross-Contamination
           </h2>
-          <p className="mt-3 text-base sm:text-lg text-slate-200 leading-relaxed">
-            At {clinicData.name}, cross-contamination prevention is our strict clinical duty. Every drill, bur, and handpiece passes through a certified 4-stage European hospital cycle.
+          <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+            At {clinicData.name}, patient safety is not a marketing phrase—it is our strictest clinical discipline. Every drill, bur, and instrument undergoes a certified 4-phase hospital cycle.
           </p>
         </div>
 
-        {/* 4-Stage Architectural Flow (Editorial Ledger, Not Boxed Icon Cards) */}
-        <div className="space-y-6 motion-reveal">
-          {steps.map((step, idx) => (
-            <div 
-              key={idx}
-              className="py-4 flex flex-col md:flex-row items-start md:items-baseline justify-between gap-4"
-            >
-              <div className="max-w-2xl space-y-1.5">
-                <div className="flex items-center gap-3">
-                  <span className="text-[13px] font-bold text-teal-300">
-                    {step.phase}
-                  </span>
-                  <span className="text-[13px] text-slate-300 font-medium">
-                    {step.param}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-white leading-snug">
-                  {step.title}
-                </h3>
-                <p className="text-base text-slate-200 leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
+        {/* 4-Phase Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((s, idx) => {
+            const Icon = s.icon;
+            return (
+              <div
+                key={idx}
+                className="group relative bg-slate-900/80 hover:bg-slate-900 border border-slate-800 hover:border-teal-500/50 p-6 sm:p-7 rounded-2xl transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  {/* Top Bar with Number & Icon */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-teal-950 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:scale-110 transition-transform">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <span className="text-2xl font-extrabold text-slate-800 group-hover:text-slate-700 transition-colors">
+                      {s.num}
+                    </span>
+                  </div>
 
-              <div className="shrink-0 text-sm font-semibold text-teal-300 bg-teal-950/40 px-3.5 py-1.5 rounded-lg">
-                Verified 0% Bio-Load
+                  {/* Text Content */}
+                  <span className="text-xs font-bold text-teal-400 uppercase tracking-wider block mb-1">
+                    {s.phase}
+                  </span>
+                  <h3 className="text-lg font-bold text-white mb-2.5 leading-snug">
+                    {s.title}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                    {s.desc}
+                  </p>
+                </div>
+
+                {/* Highlight Chip */}
+                <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-semibold text-teal-300">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                  <span>{s.highlight}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* The Open-in-Front Guarantee Callout */}
-        <div className="mt-12 p-6 sm:p-8 bg-dental-darkSurface rounded-specimen flex flex-col md:flex-row items-start md:items-center justify-between gap-6 motion-reveal">
+        {/* The Open-in-Front Guarantee Banner */}
+        <div className="mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-teal-950/60 to-slate-900 border border-teal-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="max-w-2xl space-y-1.5">
-            <span className="text-teal-300 font-bold text-sm block">
-              The "Opened in Front of Patient" Guarantee
+            <span className="text-teal-300 font-bold text-sm flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-teal-400" />
+              The "Opened in Front of Patient" Promise
             </span>
-            <p className="text-base text-slate-200 leading-relaxed">
-              Notice the color-changing chemical indicators on your sealed medical pouch. Our nursing staff opens your sterile instrument set exclusively after you are comfortably seated in the operatory chair.
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
+              Notice the color-changing chemical indicators on your sealed medical pouch. Our clinical staff unseals your instruments only after you are seated in the operatory chair.
             </p>
           </div>
-          <div className="flex items-center gap-4 text-sm text-white font-medium shrink-0">
-            <span>134°C Steam Tested</span>
-            <span>•</span>
-            <span>European Class-B Protocol</span>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="text-right hidden sm:block">
+              <span className="text-xs text-slate-400 block">Class-B Autoclave</span>
+              <span className="text-sm font-bold text-white">134°C Steam Tested</span>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 border border-teal-400/40">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
           </div>
         </div>
 
