@@ -29,7 +29,7 @@ export const BeforeAfterSlider: React.FC = () => {
   };
 
   return (
-    <section id="smile-gallery" className="py-24 lg:py-32 bg-white relative">
+    <section id="smile-gallery" className="scroll-mt-36 lg:scroll-mt-28 py-20 lg:py-28 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Section Heading */}

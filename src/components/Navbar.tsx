@@ -6,14 +6,7 @@ import { clinicData, getWhatsAppLink } from '../config/clinicData';
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [activeSection, setActiveSection] = useState<string>('treatments');
 
   const navLinks = [
     { label: 'Procedures', href: '#treatments' },
@@ -23,6 +16,50 @@ export const Navbar: React.FC = () => {
     { label: 'Reviews', href: '#reviews' },
     { label: 'FAQs', href: '#faq' },
   ];
+
+  useEffect(() => {
+    const sectionIds = ['treatments', 'smile-gallery', 'sterilization', 'doctor', 'reviews', 'faq', 'contact'];
+    
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      // Determine active section for nav tab highlights
+      const scrollPos = window.scrollY + 180;
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sectionIds[i]);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPos >= top) {
+            setActiveSection(sectionIds[i]);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Programmatic smooth scroll using native scrollIntoView with scroll-margin-top
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+
+    const targetId = href.replace('#', '');
+    const targetEl = document.getElementById(targetId);
+
+    if (targetEl) {
+      setTimeout(() => {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+
+      if (window.history.pushState) {
+        window.history.pushState(null, '', href);
+      }
+    }
+  };
 
   return (
     <header className="w-full fixed top-0 left-0 z-50">
@@ -62,14 +99,21 @@ export const Navbar: React.FC = () => {
       <nav 
         className={`w-full transition-all duration-300 ${
           scrolled 
-            ? 'glass-header py-3 shadow-soft' 
-            : 'bg-white/95 backdrop-blur-md py-4 border-b border-slate-100'
+            ? 'glass-header py-2.5 shadow-soft' 
+            : 'bg-white/95 backdrop-blur-md py-3.5 border-b border-slate-100'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           
           {/* Logo & Clinic Branding */}
-          <a href="#" className="flex items-center gap-3 group">
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="flex items-center gap-3 group"
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-cyan-700 text-white flex items-center justify-center font-bold text-base shadow-md shadow-teal-700/20 group-hover:scale-105 transition-transform">
               AD
             </div>
@@ -88,17 +132,25 @@ export const Navbar: React.FC = () => {
             </div>
           </a>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation Links with Active State */}
           <div className="hidden lg:flex items-center gap-1 bg-slate-50/80 p-1.5 rounded-full border border-slate-200/60">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="px-4 py-1.5 text-sm font-semibold text-slate-600 hover:text-teal-700 hover:bg-white rounded-full transition-all duration-200"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.replace('#', '');
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all duration-200 ${
+                    isActive
+                      ? 'bg-teal-700 text-white shadow-sm font-bold'
+                      : 'text-slate-600 hover:text-teal-700 hover:bg-white'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           </div>
 
           {/* Right Action Buttons */}
@@ -115,6 +167,7 @@ export const Navbar: React.FC = () => {
 
             <a
               href="#contact"
+              onClick={(e) => handleNavClick(e, '#contact')}
               className="shimmer-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-semibold text-sm shadow-md shadow-teal-600/20 hover:shadow-lg hover:shadow-teal-600/30 active:scale-95 transition-all"
             >
               <span>Book Appointment</span>
@@ -122,7 +175,7 @@ export const Navbar: React.FC = () => {
             </a>
           </div>
 
-          {/* Mobile Menu Toggle Button */}
+          {/* Mobile Menu & Quick Phone Button */}
           <div className="flex lg:hidden items-center gap-2">
             <a
               href={`tel:${clinicData.phoneRaw}`}
@@ -141,33 +194,62 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Animated Dropdown Menu */}
+        {/* Mobile Quick-Navigation Tab Strip (Visible directly on mobile screens) */}
+        <div className="lg:hidden w-full border-t border-slate-100/80 bg-slate-50/90 px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.replace('#', '');
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className={`px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all duration-200 shrink-0 ${
+                  isActive
+                    ? 'bg-teal-700 text-white shadow-sm font-bold'
+                    : 'bg-white text-slate-600 hover:text-teal-700 border border-slate-200/60 font-semibold'
+                }`}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Mobile Animated Dropdown Drawer (Floating Sheet) */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="lg:hidden border-t border-slate-100 bg-white/98 backdrop-blur-xl px-4 pt-3 pb-6 shadow-xl overflow-hidden"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="lg:hidden absolute top-full left-0 w-full border-t border-slate-200/80 bg-white/98 backdrop-blur-2xl px-4 pt-3 pb-6 shadow-2xl z-50 overflow-hidden"
             >
               <div className="flex flex-col space-y-1">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-700 hover:bg-teal-50 hover:text-teal-700 transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive = activeSection === link.href.replace('#', '');
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between ${
+                        isActive
+                          ? 'bg-teal-50 text-teal-800 font-bold'
+                          : 'text-slate-700 hover:bg-slate-50 hover:text-teal-700'
+                      }`}
+                    >
+                      <span>{link.label}</span>
+                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />}
+                    </a>
+                  );
+                })}
                 
                 <div className="pt-4 flex flex-col gap-2">
                   <a
                     href="#contact"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full inline-flex justify-center items-center gap-2 py-3 px-4 rounded-xl bg-teal-600 text-white font-semibold text-sm shadow-md shadow-teal-600/20"
+                    onClick={(e) => handleNavClick(e, '#contact')}
+                    className="w-full inline-flex justify-center items-center gap-2 py-3 px-4 rounded-xl bg-teal-600 text-white font-semibold text-sm shadow-md shadow-teal-600/20 active:scale-98 transition-transform"
                   >
                     <Sparkles className="w-4 h-4" />
                     <span>Book OPD Consultation</span>

@@ -127,7 +127,7 @@ export const AppointmentSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-slate-50/60 relative">
+    <section id="contact" className="scroll-mt-36 lg:scroll-mt-28 py-20 lg:py-28 bg-slate-50/60 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Section Heading */}

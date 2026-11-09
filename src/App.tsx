@@ -44,14 +44,14 @@ export const App: React.FC = () => {
         {/* 2. Specialized Clinical Procedures: The Specimen Catalogue */}
         <Treatments />
 
-        {/* 3. Hospital-Grade 4-Step European Class-B Sterilization */}
+        {/* 3. Real Clinical Transformations (Before/After Comparative Slider) */}
+        <BeforeAfterSlider />
+
+        {/* 4. Hospital-Grade 4-Step European Class-B Sterilization */}
         <Sterilization />
 
-        {/* 4. Meet the Chief Dental Surgeon & 1-on-1 Consultation */}
+        {/* 5. Meet the Chief Dental Surgeon & 1-on-1 Consultation */}
         <DoctorProfile />
-
-        {/* 5. Real Clinical Transformations (Before/After Comparative Slider) */}
-        <BeforeAfterSlider />
 
         {/* 6. Verified Patient Proof & Overcoming Anxiety */}
         <Reviews />

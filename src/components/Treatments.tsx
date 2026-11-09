@@ -29,7 +29,7 @@ export const Treatments: React.FC = () => {
     : clinicData.treatments.filter(t => t.id === activeCategory);
 
   return (
-    <section id="treatments" className="py-24 lg:py-32 bg-slate-50/60 relative">
+    <section id="treatments" className="scroll-mt-36 lg:scroll-mt-28 py-20 lg:py-28 bg-slate-50/60 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}

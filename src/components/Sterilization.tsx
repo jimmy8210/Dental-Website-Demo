@@ -39,7 +39,7 @@ export const Sterilization: React.FC = () => {
   ];
 
   return (
-    <section id="sterilization" className="py-24 lg:py-32 bg-slate-950 text-white relative overflow-hidden">
+    <section id="sterilization" className="scroll-mt-36 lg:scroll-mt-28 py-20 lg:py-28 bg-slate-950 text-white relative overflow-hidden">
       {/* Background Decorative Tech Glows */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />

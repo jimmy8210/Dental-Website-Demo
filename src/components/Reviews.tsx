@@ -6,7 +6,7 @@ export const Reviews: React.FC = () => {
   const meta = clinicData.googleReviewsMeta;
 
   return (
-    <section id="reviews" className="py-24 lg:py-32 bg-slate-50/70 relative">
+    <section id="reviews" className="scroll-mt-36 lg:scroll-mt-28 py-20 lg:py-28 bg-slate-50/70 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
