@@ -56,11 +56,11 @@ export const App: React.FC = () => {
         {/* 6. Verified Patient Proof & Overcoming Anxiety */}
         <Reviews />
 
-        {/* 7. Patient FAQs & Pricing/Hygiene Transparency */}
-        <FAQSection />
-
-        {/* 8. Split OPD Timings, Location & Direct Form Booking */}
+        {/* 7. Split OPD Timings, Location & Direct Form Booking */}
         <AppointmentSection />
+
+        {/* 8. Patient FAQs & Pricing/Hygiene Transparency */}
+        <FAQSection />
       </main>
 
       {/* Footer */}

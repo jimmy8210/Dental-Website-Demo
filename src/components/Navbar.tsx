@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Phone, MapPin, Menu, X, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clinicData, getWhatsAppLink } from '../config/clinicData';
@@ -7,6 +7,7 @@ export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('treatments');
+  const isManualScrollingRef = useRef<boolean>(false);
 
   const navLinks = [
     { label: 'Procedures', href: '#treatments' },
@@ -14,17 +15,20 @@ export const Navbar: React.FC = () => {
     { label: 'Sterilization', href: '#sterilization' },
     { label: 'Chief Surgeon', href: '#doctor' },
     { label: 'Reviews', href: '#reviews' },
+    { label: 'Book OPD', href: '#contact' },
     { label: 'FAQs', href: '#faq' },
   ];
 
   useEffect(() => {
-    const sectionIds = ['treatments', 'smile-gallery', 'sterilization', 'doctor', 'reviews', 'faq', 'contact'];
+    const sectionIds = ['treatments', 'smile-gallery', 'sterilization', 'doctor', 'reviews', 'contact', 'faq'];
     
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      // Determine active section for nav tab highlights
-      const scrollPos = window.scrollY + 180;
+      // Do not overwrite active section while a programmatic smooth scroll is underway
+      if (isManualScrollingRef.current) return;
+
+      const scrollPos = window.scrollY + 160;
       for (let i = sectionIds.length - 1; i >= 0; i--) {
         const el = document.getElementById(sectionIds[i]);
         if (el) {
@@ -42,23 +46,32 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Programmatic smooth scroll using native scrollIntoView with scroll-margin-top
+  // Programmatic smooth scroll with INSTANT tab highlight (zero lag)
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
 
     const targetId = href.replace('#', '');
-    const targetEl = document.getElementById(targetId);
+    
+    // 1. Immediately highlight the clicked tab (Zero lag / instant feedback)
+    setActiveSection(targetId);
+    isManualScrollingRef.current = true;
 
+    const targetEl = document.getElementById(targetId);
     if (targetEl) {
       setTimeout(() => {
         targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 60);
+      }, 50);
 
       if (window.history.pushState) {
         window.history.pushState(null, '', href);
       }
     }
+
+    // Re-enable scroll listener tracking once smooth scroll has finished
+    setTimeout(() => {
+      isManualScrollingRef.current = false;
+    }, 750);
   };
 
   return (
@@ -95,12 +108,12 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Glass Navbar */}
+      {/* Main Navbar - Solid Opaque & High-End */}
       <nav 
         className={`w-full transition-all duration-300 ${
           scrolled 
-            ? 'glass-header py-2.5 shadow-soft' 
-            : 'bg-white/95 backdrop-blur-md py-3.5 border-b border-slate-100'
+            ? 'bg-white shadow-soft py-2.5 border-b border-slate-200/80' 
+            : 'bg-white py-3.5 border-b border-slate-100'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
@@ -132,8 +145,8 @@ export const Navbar: React.FC = () => {
             </div>
           </a>
 
-          {/* Desktop Navigation Links with Active State */}
-          <div className="hidden lg:flex items-center gap-1 bg-slate-50/80 p-1.5 rounded-full border border-slate-200/60">
+          {/* Desktop Navigation Links with Instant Active State */}
+          <div className="hidden lg:flex items-center gap-1 bg-slate-50 p-1.5 rounded-full border border-slate-200/80">
             {navLinks.map((link) => {
               const isActive = activeSection === link.href.replace('#', '');
               return (
@@ -141,7 +154,7 @@ export const Navbar: React.FC = () => {
                   key={link.label}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all duration-200 ${
+                  className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-150 ${
                     isActive
                       ? 'bg-teal-700 text-white shadow-sm font-bold'
                       : 'text-slate-600 hover:text-teal-700 hover:bg-white'
@@ -175,55 +188,34 @@ export const Navbar: React.FC = () => {
             </a>
           </div>
 
-          {/* Mobile Menu & Quick Phone Button */}
+          {/* Mobile Right Actions: Phone Call & Non-Transparent 3-Line Menu Button */}
           <div className="flex lg:hidden items-center gap-2">
             <a
               href={`tel:${clinicData.phoneRaw}`}
               aria-label="Call clinic"
-              className="p-2.5 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+              className="p-2.5 text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl transition-colors"
             >
-              <Phone className="w-4 h-4 text-teal-600" />
+              <Phone className="w-4 h-4" />
             </a>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+              className="p-2.5 text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl transition-colors"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-slate-900" /> : <Menu className="w-5 h-5 text-slate-900" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Quick-Navigation Tab Strip (Visible directly on mobile screens) */}
-        <div className="lg:hidden w-full border-t border-slate-100/80 bg-slate-50/90 px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth">
-          {navLinks.map((link) => {
-            const isActive = activeSection === link.href.replace('#', '');
-            return (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={`px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all duration-200 shrink-0 ${
-                  isActive
-                    ? 'bg-teal-700 text-white shadow-sm font-bold'
-                    : 'bg-white text-slate-600 hover:text-teal-700 border border-slate-200/60 font-semibold'
-                }`}
-              >
-                {link.label}
-              </a>
-            );
-          })}
-        </div>
-
-        {/* Mobile Animated Dropdown Drawer (Floating Sheet) */}
+        {/* Mobile Dropdown Drawer: 100% Solid Non-Transparent Opaque White */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -8 }}
+              initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.18, ease: 'easeOut' }}
-              className="lg:hidden absolute top-full left-0 w-full border-t border-slate-200/80 bg-white/98 backdrop-blur-2xl px-4 pt-3 pb-6 shadow-2xl z-50 overflow-hidden"
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.16, ease: 'easeOut' }}
+              className="lg:hidden absolute top-full left-0 w-full bg-white border-b-2 border-slate-200 shadow-2xl px-5 pt-3 pb-8 z-50"
             >
               <div className="flex flex-col space-y-1">
                 {navLinks.map((link) => {
@@ -233,23 +225,23 @@ export const Navbar: React.FC = () => {
                       key={link.label}
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link.href)}
-                      className={`px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between ${
+                      className={`px-4 py-3 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between ${
                         isActive
-                          ? 'bg-teal-50 text-teal-800 font-bold'
-                          : 'text-slate-700 hover:bg-slate-50 hover:text-teal-700'
+                          ? 'bg-teal-50 text-teal-900 border border-teal-200 font-bold'
+                          : 'text-slate-800 hover:bg-slate-100'
                       }`}
                     >
                       <span>{link.label}</span>
-                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />}
+                      {isActive && <span className="w-2 h-2 rounded-full bg-teal-600" />}
                     </a>
                   );
                 })}
                 
-                <div className="pt-4 flex flex-col gap-2">
+                <div className="pt-4 flex flex-col gap-2.5">
                   <a
                     href="#contact"
                     onClick={(e) => handleNavClick(e, '#contact')}
-                    className="w-full inline-flex justify-center items-center gap-2 py-3 px-4 rounded-xl bg-teal-600 text-white font-semibold text-sm shadow-md shadow-teal-600/20 active:scale-98 transition-transform"
+                    className="w-full inline-flex justify-center items-center gap-2 py-3 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm shadow-md shadow-teal-600/20 active:scale-98 transition-all"
                   >
                     <Sparkles className="w-4 h-4" />
                     <span>Book OPD Consultation</span>
@@ -260,7 +252,7 @@ export const Navbar: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full inline-flex justify-center items-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold text-xs"
+                    className="w-full inline-flex justify-center items-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold text-xs transition-colors"
                   >
                     <span>Chat on WhatsApp Directly</span>
                   </a>

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { clinicData } from '../config/clinicData';
-import { MoveHorizontal, Check, Sparkles, Camera } from 'lucide-react';
+import { MoveHorizontal, Check, Sparkles } from 'lucide-react';
 
 export const BeforeAfterSlider: React.FC = () => {
   const [activeCaseIndex, setActiveCaseIndex] = useState(0);
@@ -146,36 +146,6 @@ export const BeforeAfterSlider: React.FC = () => {
             </span>
           </div>
 
-        </div>
-
-        {/* Clinical Imaging & Macro Video Strip */}
-        <div className="max-w-4xl mx-auto mt-10 p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row items-center gap-6">
-          <div className="w-full md:w-56 aspect-video rounded-xl overflow-hidden bg-slate-900 shrink-0 shadow-md">
-            <video 
-              autoPlay 
-              muted 
-              loop 
-              playsInline 
-              preload="metadata" 
-              poster="/assets/mirrorless-vs-dslr-in-dental-photography-poster.jpg" 
-              className="w-full h-full object-cover"
-              aria-hidden="true"
-            >
-              <source src="/assets/mirrorless-vs-dslr-in-dental-photography.webm" type="video/webm" />
-            </video>
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-teal-700 font-bold text-xs uppercase tracking-wide">
-              <Camera className="w-3.5 h-3.5 text-teal-600" />
-              <span>Digital Color Calibration</span>
-            </div>
-            <h4 className="text-base font-bold text-slate-900">
-              Macro Dental Photography & Shade Matching
-            </h4>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Every crown, veneer, and composite restoration is color-calibrated under standardized 5500K surgical lighting for an imperceptible, natural blend with your natural teeth.
-            </p>
-          </div>
         </div>
 
       </div>
