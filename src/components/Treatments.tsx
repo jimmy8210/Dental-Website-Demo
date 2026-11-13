@@ -17,11 +17,11 @@ export const Treatments: React.FC = () => {
 
   const treatmentImages: Record<string, string> = {
     'dental-implants': 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80',
-    'clear-aligners': 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=800&q=80',
-    'painless-rct': 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80',
-    'smile-makeover': 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80',
-    'crowns-bridges': 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80',
-    'pediatric-preventive': 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80',
+    'clear-aligners': 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&w=800&q=80',
+    'painless-rct': 'https://images.unsplash.com/photo-1681939278218-a755fb2bf2d3?auto=format&fit=crop&w=800&q=80',
+    'smile-makeover': 'https://images.unsplash.com/photo-1677026010083-78ec7f1b84ed?auto=format&fit=crop&w=800&q=80',
+    'crowns-bridges': 'https://images.unsplash.com/photo-1694359600135-bae09b9cc47e?auto=format&fit=crop&w=800&q=80',
+    'pediatric-preventive': 'https://images.unsplash.com/photo-1663755489920-5e09f66d011a?auto=format&fit=crop&w=800&q=80',
   };
 
   const filteredTreatments = activeCategory === 'all' 

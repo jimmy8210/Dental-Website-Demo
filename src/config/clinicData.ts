@@ -39,7 +39,7 @@ export const clinicData: ClinicConfig = {
     speciality: "Chief Dental Surgeon & Certified Implant Specialist",
     experienceYears: "14+ Years Experience",
     designation: "Chief Dental Surgeon & Director",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80",
+    image: "https://plus.unsplash.com/premium_photo-1682089872205-dbbae3e4ba32?auto=format&fit=crop&w=800&q=80",
     bio: [
       "Dr. Ananya Mukherjee is a renowned dental surgeon and implantologist committed to anxiety-free, gentle dentistry. With extensive postgraduate training in oral implantology and computer-guided surgical planning, she has successfully placed over 3,200 dental implants with a 98.7% long-term integration rate.",
       "She believes in complete pricing transparency, ethical treatment diagnosis, and taking the time to explain every radiograph and 3D CBCT scan to patients before initiating treatment."
@@ -190,22 +190,26 @@ export const clinicData: ClinicConfig = {
   // Interactive Smile Gallery Cases
   beforeAfterCases: [
     {
-      id: "implants-case",
-      title: "Full Arch Dental Implants & Zirconia Bridges",
-      tag: "Dental Implants",
-      description: "Restored chewing ability and smile aesthetics for a 54-year-old patient suffering from severe tooth loss and loose dentures.",
-      beforeImg: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80",
-      afterImg: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80",
-      treatmentDuration: "Completed in 3 Visits"
+      id: "veneers-case",
+      title: "Custom Porcelain Veneers & Diastema Gap Closure",
+      tag: "Porcelain Veneers",
+      description: "Closed central diastema gap and restored chipped incisal edges with hand-crafted, natural-translucency ceramic veneers.",
+      beforeImg: "/assets/veneers-before.jpg",
+      afterImg: "/assets/veneers-after.jpg",
+      treatmentDuration: "2 Sittings (Digital CAD/CAM)",
+      beforeLabel: "Before: Diastema & Chipping",
+      afterLabel: "After: Porcelain Veneers"
     },
     {
-      id: "aligners-case",
-      title: "Clear Aligners Deep Bite & Crowding Correction",
-      tag: "Clear Aligners",
-      description: "Straightened severe lower crowding and closed front gaps without any metal braces for a 26-year-old corporate consultant.",
-      beforeImg: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=800&q=80",
-      afterImg: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=800&q=80",
-      treatmentDuration: "Completed in 9 Months"
+      id: "whitening-case",
+      title: "In-Office Laser Teeth Whitening & Enamel Restoration",
+      tag: "Laser Teeth Whitening",
+      description: "Lifted deep dietary stains, yellowing, and enamel discoloration in a single 45-minute clinical laser session.",
+      beforeImg: "/assets/smile-before.jpg",
+      afterImg: "/assets/smile-after.jpg",
+      treatmentDuration: "Single 45-Min Sitting",
+      beforeLabel: "Before: Initial Staining",
+      afterLabel: "After: Laser Whitening"
     }
   ],
   

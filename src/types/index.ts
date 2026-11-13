@@ -45,6 +45,8 @@ export interface BeforeAfterCase {
   beforeImg: string;
   afterImg: string;
   treatmentDuration: string;
+  beforeLabel?: string;
+  afterLabel?: string;
 }
 
 export interface ClinicConfig {

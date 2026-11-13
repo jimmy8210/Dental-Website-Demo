@@ -1,7 +1,7 @@
 import React from 'react';
-import { MessageCircle, ArrowRight, CheckCircle2, Star, ShieldCheck, Sparkles, Award } from 'lucide-react';
+import { MessageCircle, ArrowRight, CheckCircle2, Star, ShieldCheck, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { clinicData, getWhatsAppLink } from '../config/clinicData';
+import { getWhatsAppLink } from '../config/clinicData';
 
 export const Hero: React.FC = () => {
   return (
@@ -110,30 +110,30 @@ export const Hero: React.FC = () => {
           >
             {/* Visual Container */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-slate-300/60 bg-gradient-to-tr from-slate-100 to-teal-50 border border-slate-200/80 p-2">
-              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-200">
+              <div className="relative aspect-[16/10] max-h-[480px] rounded-2xl overflow-hidden bg-slate-100">
                 <img 
-                  src={clinicData.doctor.image} 
-                  alt={`${clinicData.doctor.name} - Chief Dental Surgeon`}
-                  className="w-full h-full object-cover object-top hover:scale-102 transition-transform duration-700"
+                  src="https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1200&q=80" 
+                  alt="Apex Dental & Implant Centre - Modern Surgical Operatory & Dental Chair Suite"
+                  className="w-full h-full max-h-[480px] object-cover hover:scale-102 transition-transform duration-700"
                   loading="eager"
                 />
 
                 {/* Bottom Overlay Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
 
-                {/* Doctor Caption Tag */}
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl glass-dark text-white">
+                {/* Clinic Operatory Caption Tag */}
+                <div className="absolute bottom-4 left-4 right-4 p-3.5 sm:p-4 rounded-xl glass-dark text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-extrabold text-white text-base leading-tight">
-                        {clinicData.doctor.name}
+                      <h3 className="font-extrabold text-white text-sm sm:text-base leading-tight">
+                        Apex Surgical Operatory Suite
                       </h3>
                       <p className="text-teal-300 text-xs font-medium mt-0.5">
-                        {clinicData.doctor.degrees}
+                        European Class-B Sterilized • 3D Guided Setup
                       </p>
                     </div>
-                    <div className="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-400/40 flex items-center justify-center text-teal-300">
-                      <Award className="w-4 h-4" />
+                    <div className="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-400/40 flex items-center justify-center text-teal-300 shrink-0">
+                      <Sparkles className="w-4 h-4" />
                     </div>
                   </div>
                 </div>

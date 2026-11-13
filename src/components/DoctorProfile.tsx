@@ -29,14 +29,14 @@ export const DoctorProfile: React.FC = () => {
             
             {/* Left Column: Portrait & Direct Care Guarantee */}
             <div className="lg:col-span-5 space-y-5">
-              <div className="relative rounded-2xl overflow-hidden aspect-[4/5] bg-slate-200 shadow-md">
+              <div className="relative rounded-2xl overflow-hidden max-h-[420px] bg-slate-100 shadow-md">
                 <img 
                   src={doctor.image} 
                   alt={`${doctor.name} - ${doctor.degrees}`}
-                  className="w-full h-full object-cover object-top hover:scale-102 transition-transform duration-500"
+                  className="max-h-[420px] w-full object-cover object-top rounded-2xl hover:scale-102 transition-transform duration-500"
                   loading="lazy"
                 />
-                <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md p-3.5 rounded-xl border border-white/60 shadow-sm">
+                <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md p-3.5 rounded-xl border border-white/60 shadow-sm">
                   <h3 className="font-extrabold text-slate-900 text-base leading-tight">
                     {doctor.name}
                   </h3>

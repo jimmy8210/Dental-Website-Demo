@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { clinicData } from '../config/clinicData';
 import { MoveHorizontal, Check, Sparkles } from 'lucide-react';
 
@@ -7,8 +7,27 @@ export const BeforeAfterSlider: React.FC = () => {
   const [sliderPos, setSliderPos] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(800);
 
   const activeCase = clinicData.beforeAfterCases[activeCaseIndex];
+
+  // Measure container width so the clipped before image matches the after image 1:1 perfectly
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(containerRef.current);
+    window.addEventListener('resize', updateWidth);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateWidth);
+    };
+  }, []);
 
   const handleMove = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -19,14 +38,32 @@ export const BeforeAfterSlider: React.FC = () => {
     setSliderPos(percentage);
   }, []);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    handleMove(e.touches[0].clientX);
-  };
+  // Global drag listener so fast cursor movement doesn't drop the slider
+  useEffect(() => {
+    const handleGlobalMove = (e: MouseEvent | TouchEvent) => {
+      if (!isDragging) return;
+      const clientX = 'touches' in e ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX;
+      handleMove(clientX);
+    };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    handleMove(e.clientX);
-  };
+    const handleGlobalUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleGlobalMove);
+      window.addEventListener('mouseup', handleGlobalUp);
+      window.addEventListener('touchmove', handleGlobalMove, { passive: true });
+      window.addEventListener('touchend', handleGlobalUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleGlobalMove);
+      window.removeEventListener('mouseup', handleGlobalUp);
+      window.removeEventListener('touchmove', handleGlobalMove);
+      window.removeEventListener('touchend', handleGlobalUp);
+    };
+  }, [isDragging, handleMove]);
 
   return (
     <section id="smile-gallery" className="scroll-mt-36 lg:scroll-mt-28 py-20 lg:py-28 bg-white relative">
@@ -36,34 +73,36 @@ export const BeforeAfterSlider: React.FC = () => {
         <div className="max-w-3xl mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-teal-600" />
-            <span>Documented Clinical Outcomes</span>
+            <span>Documented Smile Transformations</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            See the Life-Changing Transformations
+            See the Life-Changing Smile Makeovers
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            Drag the comparison slider left and right to inspect real dental implants, aesthetic veneers, and orthodontic alignments completed at Apex Dental.
+            Drag the comparison slider left and right to inspect real close-up smile transformations, in-office laser teeth whitening, and aesthetic porcelain veneer restorations completed at Apex Dental.
           </p>
 
           {/* Case Selector Tabs */}
-          <div className="flex flex-wrap items-center gap-2 mt-8">
-            {clinicData.beforeAfterCases.map((item, idx) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveCaseIndex(idx);
-                  setSliderPos(50);
-                }}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                  activeCaseIndex === idx
-                    ? 'bg-slate-900 text-white shadow-md shadow-slate-900/15'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                {item.tag}
-              </button>
-            ))}
-          </div>
+          {clinicData.beforeAfterCases.length > 1 && (
+            <div className="flex flex-wrap items-center gap-2 mt-8">
+              {clinicData.beforeAfterCases.map((item, idx) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveCaseIndex(idx);
+                    setSliderPos(50);
+                  }}
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                    activeCaseIndex === idx
+                      ? 'bg-slate-900 text-white shadow-md shadow-slate-900/15'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {item.tag}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Main Transformation Showcase Card */}
@@ -85,42 +124,46 @@ export const BeforeAfterSlider: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Drag Viewport */}
+          {/* Interactive Drag Viewport - Native 4:3 Aspect Matching the 1024x768 Photos */}
           <div
             ref={containerRef}
-            className="relative w-full aspect-[4/3] sm:aspect-[16/9] rounded-2xl overflow-hidden select-none cursor-ew-resize bg-slate-900 shadow-inner"
-            onMouseDown={() => setIsDragging(true)}
-            onMouseUp={() => setIsDragging(false)}
-            onMouseLeave={() => setIsDragging(false)}
-            onMouseMove={handleMouseMove}
-            onTouchMove={handleTouchMove}
-            onClick={(e) => handleMove(e.clientX)}
+            className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden select-none cursor-ew-resize bg-slate-900 shadow-inner"
+            onMouseDown={(e) => {
+              setIsDragging(true);
+              handleMove(e.clientX);
+            }}
+            onTouchStart={(e) => {
+              setIsDragging(true);
+              handleMove(e.touches[0].clientX);
+            }}
           >
-            {/* AFTER Image */}
+            {/* AFTER Image: Real Outcome (No synthetic CSS filter) */}
             <img
               src={activeCase.afterImg}
-              alt="After dental transformation result"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              alt={`After smile transformation - ${activeCase.title}`}
+              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
             />
-            <div className="absolute top-4 right-4 bg-slate-950/85 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-lg pointer-events-none border border-white/20">
-              Post-Treatment Outcome
+            <div className="absolute top-4 right-4 bg-teal-950/85 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-lg pointer-events-none border border-teal-400/30 flex items-center gap-1.5 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+              <span>{activeCase.afterLabel || 'After Treatment'}</span>
             </div>
 
-            {/* BEFORE Image (Clipped layer) */}
+            {/* BEFORE Image (Clipped layer - Real authentic clinical presentation, no synthetic CSS filter) */}
             <div
               className="absolute inset-0 overflow-hidden pointer-events-none"
               style={{ width: `${sliderPos}%` }}
             >
               <img
                 src={activeCase.beforeImg}
-                alt="Before dental treatment initial condition"
-                className="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none"
+                alt={`Before smile presentation - ${activeCase.title}`}
+                className="absolute inset-0 w-full h-full object-cover object-center max-w-none pointer-events-none"
                 style={{
-                  width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%',
+                  width: `${containerWidth}px`,
                 }}
               />
-              <div className="absolute top-4 left-4 bg-slate-950/85 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-lg pointer-events-none border border-white/20">
-                Initial Presentation
+              <div className="absolute top-4 left-4 bg-slate-950/85 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-lg pointer-events-none border border-white/20 flex items-center gap-1.5 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                <span>{activeCase.beforeLabel || 'Before Treatment'}</span>
               </div>
             </div>
 
@@ -139,7 +182,7 @@ export const BeforeAfterSlider: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-4 text-xs sm:text-sm text-slate-600">
             <span className="flex items-center gap-1.5 text-teal-700 font-semibold">
               <MoveHorizontal className="w-4 h-4 text-teal-600" />
-              <span>Drag slider left or right to inspect tooth shade and gum line contours</span>
+              <span>Drag slider left or right to inspect tooth shade, enamel polish, and alignment</span>
             </span>
             <span className="text-slate-500 italic">
               {activeCase.description}
